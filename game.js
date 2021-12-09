@@ -23,5 +23,9 @@ var tracker1;
 var tracker2;
 var cursors;
 var spaceKey;
+var start_game;
+var lap_time;
+var timedEvent;
+var text;
 
 var game = new Phaser.Game(config);

@@ -3,11 +3,8 @@ class Scene2 extends Phaser.Scene {
         super("playGame");
     }
 
-    
-
     create()
     {
-        
         this.matter.world.setBounds(5, 5, 790, 790);
 
         map = this.add.image(0, 0, 'map').setOrigin(0,0);
@@ -33,10 +30,19 @@ class Scene2 extends Phaser.Scene {
         car.setMass(300);
 
         //Side Bar Text
-        this.drs_label = this.add.text(807, 10, "DRS:", { font: "16px Arial", fill: "#ffffff", align: "center" });
-        this.drs_value = this.add.text(852, 10, "[NO]", { font: "16px Arial", fill: "#ffffff", align: "center" });
+        this.drs_label = this.add.text(807, 100, "DRS:", { font: "16px Arial", fill: "#ffffff", align: "center" });
+        this.drs_value = this.add.text(852, 100, "[NO]", { font: "16px Arial", fill: "#ffffff", align: "center" });
         this.reset = this.add.text(807, 700, "[R] to reset", { font: "16px Arial", fill: "#ffffff", align: "center" });
         
+        //START TEXT
+        this.start_text = this.add.text(80, 100, "The clock will start once you press UP ARROW Key", {font: "30px Arial", fill: "#302b2b", align: "center"}).setBackgroundColor('#ffffff');
+
+        this.initialTime = 0;
+        //Lap Time text
+        this.add.text(807, 10, "Current Lap: "+ this.formatTime(this.initialTime), { font: "16px Arial", fill: "#ffffff", align: "center" });
+        lap_time = this.add.text(807, 40, ''+this.formatTime(this.initialTime), { font: "16px Arial", fill: "#ffffff", align: "center" });
+        timedEvent = this.time.addEvent({ delay: 10, callback: this.onEvent, callbackScope: this, loop: true });
+
 
         this.cursors = this.input.keyboard.createCursorKeys();
         this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
@@ -47,14 +53,35 @@ class Scene2 extends Phaser.Scene {
         car.kill();
     }
 
-    update() {
+    game_start(){
         
+    }
 
-        
+    formatTime(seconds){
+        // Minutes
+        var minutes = Math.floor(seconds/6000);
+        // Seconds
+        var partInSeconds = seconds%6000;
+        // Adds left zeros to seconds
+        partInSeconds = partInSeconds.toString().padStart(4,'0');
+        // Returns formated time
+        return `${minutes}:${partInSeconds}`;
+    }
+
+    onEvent () //Called my Lap time TIMER
+    {
+    this.initialTime += 1; // One second
+    lap_time.setText(''+this.formatTime(this.initialTime));
+    }
+
+    update() {
         if (this.cursors.up.isDown)
         {
             car.thrust(0.1);
             
+            //Remove start text
+            this.start_text.setVisible(false);
+
             if (this.cursors.left.isDown)
             {
                 car.angle -= 1.35;
@@ -98,7 +125,7 @@ class Scene2 extends Phaser.Scene {
 
         if(this.r_key.isDown)
         {
-            reset_game();
+            this.reset_game();
         }
     }
 

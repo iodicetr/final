@@ -9,8 +9,12 @@ class Scene1 extends Phaser.Scene {
     this.load.image('car', 'assets/car.png');
     this.load.image('finish_line', 'assets/finish_line.png');
     this.load.image('center_wall', 'assets/center_wall.png');
+    this.load.spritesheet("explosion", "assets/spritesheets/explosion.png",{
+        frameWidth: 16,
+        frameHeight: 16
+      });
 
-    this.load.json('map_physics', 'assets/map_physics.json');
+    this.load.json('shapes', 'assets/map_physics.json');
     }
 
     
@@ -25,6 +29,18 @@ class Scene1 extends Phaser.Scene {
         this.add.text(80, 400, "- Collisions with the wall will result in an explosion and restart", {font: "20px Arial", fill: "#ffffff", align: "left" });
         this.add.text(80, 440, "- Driving in the dirt will slow you down", {font: "20px Arial", fill: "#ffffff", align: "left" });
         this.add.text(80, 500, "- Press SPACE to enter the game", {font: "25px Arial", fill: "#eb4034", align: "left" });
+        
+        //explosion sprite
+        this.anims.create({
+            key: "explode",
+            frames: this.anims.generateFrameNumbers("explosion"),
+            frameRate: 20,
+            repeat: 0,
+            hideOnComplete: true
+            });
+
+
+        //Needed to leave scene 1 and go to scene 2
         spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
     update() {

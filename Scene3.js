@@ -4,27 +4,45 @@ class Scene3 extends Phaser.Scene {
     }
     
     create() {
+        //Check if they crashed
+        if (crash == true){
+            this.showNotification();
+            this.add.text(80, 100, "END OF GAME BECAUSE OF CRASH", {font: "25px Arial", fill: "#c9140e", align: "left" });
+            this.add.text(80, 180, "- Lap 1: "+ time1, {font: "20px Arial", fill: "#c9140e", align: "left" });
+            this.add.text(80, 220, "- Lap 2: "+ time2, {font: "20px Arial", fill: "#c9140e", align: "left" });
+            this.add.text(80, 260, "- Lap 3: "+ time3, {font: "20px Arial", fill: "#c9140e", align: "left" });
+        }
+        else {
+            this.add.text(80, 180, "- Lap 1: "+ time1, {font: "20px Arial", fill: "#ffffff", align: "left" });
+            this.add.text(80, 220, "- Lap 2: "+ time2, {font: "20px Arial", fill: "#ffffff", align: "left" });
+            this.add.text(80, 260, "- Lap 3: "+ time3, {font: "20px Arial", fill: "#ffffff", align: "left" });
+            this.add.text(80, 100, "END OF GAME", {font: "25px Arial", fill: "#ffffff", align: "left" });     
+        }
         this.add.text(350, 20, "Race Tycoon", {font: "36px Arial", fill: "#66d0f2", align: "center" });
-        this.add.text(80, 100, "END OF GAME", {font: "25px Arial", fill: "#ffffff", align: "left" });
-        this.add.text(80, 140, "- Lap Times:", {font: "20px Arial", fill: "#ffffff", align: "left" });
-        this.add.text(80, 180, "- Lap 1: "+ time1, {font: "20px Arial", fill: "#ffffff", align: "left" });
-        this.add.text(80, 220, "- Lap 2: "+ time1, {font: "20px Arial", fill: "#ffffff", align: "left" });
-        this.add.text(80, 260, "- Lap 3: "+ time1, {font: "20px Arial", fill: "#ffffff", align: "left" });
-        this.add.text(390, 350, "Leader Board", {font: "30px Arial", fill: "#66d0f2", align: "center" });
-        this.add.text(80, 320, "- 1. " + , {font: "20px Arial", fill: "#ffffff", align: "left" });
-        this.add.text(80, 360, "---- 2. The fastest of the three laps will be saved to the leader board", {font: "20px Arial", fill: "#ffffff", align: "left" });
-        this.add.text(80, 400, "-------- 3. Collisions with the wall will result in an explosion and restart", {font: "20px Arial", fill: "#ffffff", align: "left" });
-        this.add.text(80, 440, "-------------4. Driving in the dirt will slow you down", {font: "20px Arial", fill: "#ffffff", align: "left" });
-        this.add.text(80, 700, "- Press SPACE to RESTART the game", {font: "25px Arial", fill: "#66d0f2", align: "left" });
+        this.add.text(80, 140, "Lap Times:", {font: "20px Arial", fill: "#ffffff", align: "left" });
+        
+        this.add.text(80, 700, "- Press [R] to RESTART the game", {font: "25px Arial", fill: "#66d0f2", align: "left" });
         
        
-        //Needed to leave scene 1 and go to scene 2
-        spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        //Needed to leave scene 3 and go to scene 1
+        this.r_key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
     }
     update() {
-        if(spaceKey.isDown)
+        if(this.r_key.isDown)
         {
-            this.scene.start("playGame");
+            this.scene.start("bootGame");
         }
+    }
+
+    showNotification() {
+        const notification = new Notification("OH NO! You Crashed!", {
+            body: "If we really feared the crash, most of us would be unable to look at a car, let alone drive one!",
+            icon: "assets/icon.png"
+        });
+
+        notification.onclick = (e) => {
+            window.location.href = "";
+        }
+
     }
 }

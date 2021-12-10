@@ -24,9 +24,9 @@ class Scene1 extends Phaser.Scene {
         this.add.text(390, 250, "Objective", {font: "30px Arial", fill: "#66d0f2", align: "center" });
         this.add.text(80, 320, "- You have three laps to complete the fastest lap", {font: "20px Arial", fill: "#ffffff", align: "left" });
         this.add.text(80, 360, "- The fastest of the three laps will be saved to the leader board", {font: "20px Arial", fill: "#ffffff", align: "left" });
-        this.add.text(80, 400, "- Collisions with the wall will result in an explosion and restart", {font: "20px Arial", fill: "#ffffff", align: "left" });
+        this.add.text(80, 400, "- Collisions with the wall will result in a crash", {font: "20px Arial", fill: "#ffffff", align: "left" });
         this.add.text(80, 440, "- Driving in the dirt will slow you down", {font: "20px Arial", fill: "#ffffff", align: "left" });
-        this.add.text(80, 700, "- Press SPACE to enter the game", {font: "25px Arial", fill: "#eb4034", align: "left" });
+        this.add.text(80, 700, "- Press SPACE to enter the game", {font: "25px Arial", fill: "#66d0f2", align: "left" });
         
         //explosion sprite
         this.anims.create({
@@ -38,13 +38,18 @@ class Scene1 extends Phaser.Scene {
             });
 
 
+        //Request permissions for a notification
+        if(Notification.permission !== "denied") {
+            Notification.requestPermission();
+        }
+
         //Needed to leave scene 1 and go to scene 2
         spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
     update() {
         if(spaceKey.isDown)
         {
-            this.scene.start("endGame");
+            this.scene.start("playGame");
         }
     }
 }

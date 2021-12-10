@@ -51,16 +51,10 @@ class Scene2 extends Phaser.Scene {
         this.matter.world.on("collisionstart", (start_event) => {
             start_event.pairs.forEach((pair) => {
                 const { bodyA, bodyB } = pair;
-                const gameObjectA = bodyA.gameObject;
-
-                //The car is always gameObjectB since nothing else moves in this game
-                const gameObjectB = bodyB.gameObject;
-
-                //console.log(gameObjectA);
-                //console.log(gameObjectB);
               
                 //If you hit the wall
-                if(bodyA.label == "Rectangle Body") {
+                if(bodyA.label == "Rectangle Body" || bodyA.label == "center_wall" || bodyA.label == "bottom_wall" 
+                || bodyA.label == "top_wall" || bodyA.label == "right_wall" ) {
                     this.crash();
                 }
 
@@ -70,7 +64,6 @@ class Scene2 extends Phaser.Scene {
 
                 //Must pass the can_finish_line before a lap time counts
                 if(bodyA.label == "can_finish_line") {
-                    console.log("Can finish");
                     this.can_finish = true;
                 }
                 /*
@@ -117,14 +110,8 @@ class Scene2 extends Phaser.Scene {
         
         
 
-
-        /*
-        finish_line = this.matter.add.image(62,335, 'finish_line').setStatic(true);
-        finish_line.setScale(0.9);
-        */
-
         car = this.matter.add.sprite(74, 367, 'car');
-        //car.setCollisionGroup(1);
+        car.setVisible(true);
         car.setScale(0.01);
         car.setAngle(-90);
         car.setFrictionAir(0.1);
@@ -132,6 +119,7 @@ class Scene2 extends Phaser.Scene {
 
         //Default car variables
         offtrack = false; //car starts on the tack
+        crash = false;
         this.count = 0;
         this.can_finish = false;
 
@@ -156,10 +144,17 @@ class Scene2 extends Phaser.Scene {
         
     }
 
-    crash(pointer, gameObject) {
-        gameObject.setTexture("explosion");
-        gameObject.play("explode");
-        this.reset_game();
+    crash() {
+        crash = true;
+        this.boom = this.add.sprite(car.x, car.y, 'explosion');
+        this.boom.setScale(2);
+        this.boom.play("explode");
+        car.setVisible(false);
+        this.boom.once('animationcomplete', ()=>{ 
+            this.scene.start("endGame");
+        });
+        //this.time.delayedCall(2000, this.scene.start("endGame"), [], this);
+        //this.scene.start("endGame");
     }
 
     game_start(){
@@ -174,25 +169,30 @@ class Scene2 extends Phaser.Scene {
     }
 
     finished_lap() {
-        console.log(this.count);
         
         if(this.can_finish == true){
             if(this.count == 0){
-                time1 = this.formatTime(this.initialTime);
+                const temp1 = this.formatTime(this.initialTime);
+                time1 = temp1;
                 this.add.text(803, 200, "Lap 1: "+ time1, { font: "15px Arial", fill: "#ffffff", align: "center" });
             }
             if(this.count == 1){
-                time2 = this.formatTime(this.initialTime);
+                const temp2 = this.formatTime(this.initialTime);
+                time2 = temp2;
                 this.add.text(803, 230, "Lap 2: "+ time2, { font: "15px Arial", fill: "#ffffff", align: "center" });
             }
             if(this.count == 2){
-                time3 = this.formatTime(this.initialTime);
+                const temp3 = this.formatTime(this.initialTime);
+                time3 = temp3;
                 this.add.text(803, 260, "Lap 3: "+ time3, { font: "15px Arial", fill: "#ffffff", align: "center" });
+                
+                
+                this.pause();
                 this.scene.start("endGame");
             }
 
             //Reset the count and lap 
-            this.start_lap();
+            this.initialTime = 0;
             this.count++;
             this.can_finish = false;
         }

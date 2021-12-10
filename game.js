@@ -27,7 +27,8 @@ var start_game;
 var lap_time;
 var timedEvent;
 var offtrack;
-var time1 = 0, time2 = 0, time3 = 0;
+var time1 = 0, time2 = 0, time3 = 0, bestLap = 0;
+var crash;
 
 
 var game = new Phaser.Game(config);

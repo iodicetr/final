@@ -15,34 +15,34 @@ class Scene2 extends Phaser.Scene {
         map.displayHeight = 800;
 
         //Collisions
+        var cat1 = this.matter.world.nextCategory();
+        var cat2 = this.matter.world.nextCategory();
+        
         this.shapes = this.cache.json.get('shapes');
 
         this.center_wall = this.matter.add.sprite(305, 400, 'center_wall', null, {shape: this.shapes.center_wall});
         this.center_wall.setScale(.78);
+        this.center_wall.setVisible(false);
 
         this.top_wall = this.matter.add.sprite(400, 90, 'top_wall', null, {shape: this.shapes.top_wall});
         this.top_wall.setScale(.78);
+        this.top_wall.setVisible(false);
 
         this.right_wall = this.matter.add.sprite(624, 418, 'right_wall', null, {shape: this.shapes.right_wall});
         this.right_wall.setScale(.78);
+        this.right_wall.setVisible(false);
 
         this.bottom_wall = this.matter.add.sprite(407, 745, 'bottom_wall', null, {shape: this.shapes.bottom_wall});
         this.bottom_wall.setScale(.78);
+        this.bottom_wall.setVisible(false);
 
-        //this.circuit = this.matter.add.sprite(400, 400, 'circuit', null, {shape: this.shapes.circuit});
-        //this.circuit.setScale(.78);
-        /*
-        this.outer_circuit = this.matter.add.sprite(380, 410, 'outer_circuit', null, {shape: this.shapes.outer_circuit});
-        this.outer_circuit.setScale(.78);
-
-        this.inner_circuit = this.matter.add.sprite(365, 415, 'inner_circuit', null, {shape: this.shapes.inner_circuit});
-        this.inner_circuit.setScale(.78);
-        */
         this.finish_line = this.matter.add.sprite(62, 334, 'finish_line', null, {shape: this.shapes.finish_line});
         this.finish_line.setScale(.78);
+        this.finish_line.setVisible(false);
 
         this.can_finish_line = this.matter.add.sprite(62, 500, 'can_finish_line', null, {shape: this.shapes.can_finish_line});
         this.can_finish_line.setScale(1.2);
+        this.can_finish_line.setVisible(false);
         
 
         
@@ -51,13 +51,14 @@ class Scene2 extends Phaser.Scene {
         this.matter.world.on("collisionstart", (start_event) => {
             start_event.pairs.forEach((pair) => {
                 const { bodyA, bodyB } = pair;
-              
+
                 //If you hit the wall
                 if(bodyA.label == "Rectangle Body" || bodyA.label == "center_wall" || bodyA.label == "bottom_wall" 
                 || bodyA.label == "top_wall" || bodyA.label == "right_wall" ) {
                     this.crash();
                 }
 
+                //Crossing the finish_line
                 if(bodyA.label == "finish_line") {
                     this.finished_lap();
                 }
@@ -66,49 +67,9 @@ class Scene2 extends Phaser.Scene {
                 if(bodyA.label == "can_finish_line") {
                     this.can_finish = true;
                 }
-                /*
-                //Check to see if the car has entered the circuit
-                if (bodyA.label == 'outer_circuit') {
-                    offtrack = false;
-                    console.log("ON track");
-                }
-                */
-                
-            });
-        });
-        
-        
-        //This is called every time a collision ends
-        this.matter.world.on("collisionend", function(end_event, bodyA, bodyB) {
-            end_event.pairs.forEach((pair) => {
-                //The car is always bodyB since nothing else moves in this game
-                //console.log(bodyA);
-                //console.log(bodyB);
-                
-                /*
-                //Check to see if the car has left the circuit
-                if (bodyA.label == 'outer_circuit') {
-                    offtrack = true;
-                    console.log("offtrack");
-                }
-                */
             });
         });
 
-        /*
-        // this event will check all active collisions
-        this.matter.world.on("collisionactive", function(active_event){
-            active_event.pairs.forEach(function(p){
-                if(p.bodyA.label == 'outer_circuit'){
-                    offtrack = false;
-                    console.log(offtrack);
-                }
-                
-            });
-        });
-        */
-        
-        
 
         car = this.matter.add.sprite(74, 367, 'car');
         car.setVisible(true);
@@ -187,7 +148,6 @@ class Scene2 extends Phaser.Scene {
                 this.add.text(803, 260, "Lap 3: "+ time3, { font: "15px Arial", fill: "#ffffff", align: "center" });
                 
                 
-                this.pause();
                 this.scene.start("endGame");
             }
 

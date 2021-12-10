@@ -24,7 +24,7 @@ class Scene1 extends Phaser.Scene {
         this.add.text(390, 250, "Objective", {font: "30px Arial", fill: "#66d0f2", align: "center" });
         this.add.text(80, 320, "- You have three laps to complete the fastest lap", {font: "20px Arial", fill: "#ffffff", align: "left" });
         this.add.text(80, 360, "- Collisions with the wall will result in a crash", {font: "20px Arial", fill: "#ffffff", align: "left" });
-        this.add.text(80, 400, "- Driving in the dirt will slow you down", {font: "20px Arial", fill: "#ffffff", align: "left" });
+        this.add.text(80, 400, "- You must complete an entire lap before your time is counted", {font: "20px Arial", fill: "#ffffff", align: "left" });
         this.add.text(80, 700, "- Press SPACE to enter the game", {font: "25px Arial", fill: "#66d0f2", align: "left" });
         
         //explosion sprite

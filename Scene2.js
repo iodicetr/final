@@ -36,6 +36,7 @@ class Scene2 extends Phaser.Scene {
         this.bottom_wall.setScale(.78);
         this.bottom_wall.setVisible(false);
 
+
         this.finish_line = this.matter.add.sprite(62, 334, 'finish_line', null, {shape: this.shapes.finish_line});
         this.finish_line.setScale(.78);
         this.finish_line.setVisible(false);

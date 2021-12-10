@@ -7,7 +7,6 @@ class Scene1 extends Phaser.Scene {
     {
     this.load.image('map', 'assets/map.png');
     this.load.image('car', 'assets/car.png');
-    this.load.image('finish_line', 'assets/finish_line.png');
     this.load.spritesheet("explosion", "assets/spritesheets/explosion.png",{
         frameWidth: 16,
         frameHeight: 16
@@ -27,7 +26,7 @@ class Scene1 extends Phaser.Scene {
         this.add.text(80, 360, "- The fastest of the three laps will be saved to the leader board", {font: "20px Arial", fill: "#ffffff", align: "left" });
         this.add.text(80, 400, "- Collisions with the wall will result in an explosion and restart", {font: "20px Arial", fill: "#ffffff", align: "left" });
         this.add.text(80, 440, "- Driving in the dirt will slow you down", {font: "20px Arial", fill: "#ffffff", align: "left" });
-        this.add.text(80, 500, "- Press SPACE to enter the game", {font: "25px Arial", fill: "#eb4034", align: "left" });
+        this.add.text(80, 700, "- Press SPACE to enter the game", {font: "25px Arial", fill: "#eb4034", align: "left" });
         
         //explosion sprite
         this.anims.create({
@@ -45,7 +44,7 @@ class Scene1 extends Phaser.Scene {
     update() {
         if(spaceKey.isDown)
         {
-            this.scene.start("playGame");
+            this.scene.start("endGame");
         }
     }
 }

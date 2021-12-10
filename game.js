@@ -14,7 +14,7 @@ var config = {
             }
         }
     },
-    scene: [Scene1, Scene2]
+    scene: [Scene1, Scene2, Scene3]
 };
 
 var car;
@@ -26,6 +26,8 @@ var spaceKey;
 var start_game;
 var lap_time;
 var timedEvent;
+var offtrack;
+var time1 = 0, time2 = 0, time3 = 0;
 
 
 var game = new Phaser.Game(config);

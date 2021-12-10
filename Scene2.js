@@ -28,53 +28,93 @@ class Scene2 extends Phaser.Scene {
 
         this.bottom_wall = this.matter.add.sprite(407, 745, 'bottom_wall', null, {shape: this.shapes.bottom_wall});
         this.bottom_wall.setScale(.78);
-        
+
+        //this.circuit = this.matter.add.sprite(400, 400, 'circuit', null, {shape: this.shapes.circuit});
+        //this.circuit.setScale(.78);
+        /*
         this.outer_circuit = this.matter.add.sprite(380, 410, 'outer_circuit', null, {shape: this.shapes.outer_circuit});
         this.outer_circuit.setScale(.78);
 
         this.inner_circuit = this.matter.add.sprite(365, 415, 'inner_circuit', null, {shape: this.shapes.inner_circuit});
         this.inner_circuit.setScale(.78);
-        
+        */
+        this.finish_line = this.matter.add.sprite(62, 334, 'finish_line', null, {shape: this.shapes.finish_line});
+        this.finish_line.setScale(.78);
+
+        this.can_finish_line = this.matter.add.sprite(62, 500, 'can_finish_line', null, {shape: this.shapes.can_finish_line});
+        this.can_finish_line.setScale(1.2);
         
 
+        
+        
         //This is called every time a collision starts
-        this.matter.world.on("collisionstart", (event) => {
-            event.pairs.forEach((pair) => {
-              const { bodyA, bodyB } = pair;
-              const gameObjectA = bodyA.gameObject;
-              const gameObjectB = bodyB.gameObject;
-              //console.log(pair); console.log(gameObjectA); console.log(gameObjectB);
-              
-              const aIsEmoji = gameObjectA instanceof Phaser.Physics.Matter.Sprite;
-              const bIsEmoji = gameObjectB instanceof Phaser.Physics.Matter.Sprite;
-              console.log(gameObjectA);
-              console.log(gameObjectB);
-              
-              if(gameObjectA == null) {
-                  this.reset_game();
-              }
+        this.matter.world.on("collisionstart", (start_event) => {
+            start_event.pairs.forEach((pair) => {
+                const { bodyA, bodyB } = pair;
+                const gameObjectA = bodyA.gameObject;
 
+                //The car is always gameObjectB since nothing else moves in this game
+                const gameObjectB = bodyB.gameObject;
+
+                //console.log(gameObjectA);
+                //console.log(gameObjectB);
+              
+                //If you hit the wall
+                if(bodyA.label == "Rectangle Body") {
+                    this.crash();
+                }
+
+                if(bodyA.label == "finish_line") {
+                    this.finished_lap();
+                }
+
+                //Must pass the can_finish_line before a lap time counts
+                if(bodyA.label == "can_finish_line") {
+                    console.log("Can finish");
+                    this.can_finish = true;
+                }
+                /*
+                //Check to see if the car has entered the circuit
+                if (bodyA.label == 'outer_circuit') {
+                    offtrack = false;
+                    console.log("ON track");
+                }
+                */
+                
             });
         });
-
+        
+        
         //This is called every time a collision ends
-        this.matter.world.on("collisionend", (event) => {
-            event.pairs.forEach((pair) => {
-              const { bodyA, bodyB } = pair;
-              const gameObjectA = bodyA.gameObject;
-              const gameObjectB = bodyB.gameObject;
-
-              console.log(gameObjectA);
-              console.log(gameObjectB);
-              
-            //Check to see if the car has left the circuit
-            if (gameObjectA.body.label == 'outer_circuit') {
-                console.log("Left the Track");
-            }
-
-
+        this.matter.world.on("collisionend", function(end_event, bodyA, bodyB) {
+            end_event.pairs.forEach((pair) => {
+                //The car is always bodyB since nothing else moves in this game
+                //console.log(bodyA);
+                //console.log(bodyB);
+                
+                /*
+                //Check to see if the car has left the circuit
+                if (bodyA.label == 'outer_circuit') {
+                    offtrack = true;
+                    console.log("offtrack");
+                }
+                */
             });
         });
+
+        /*
+        // this event will check all active collisions
+        this.matter.world.on("collisionactive", function(active_event){
+            active_event.pairs.forEach(function(p){
+                if(p.bodyA.label == 'outer_circuit'){
+                    offtrack = false;
+                    console.log(offtrack);
+                }
+                
+            });
+        });
+        */
+        
         
 
 
@@ -90,9 +130,14 @@ class Scene2 extends Phaser.Scene {
         car.setFrictionAir(0.1);
         car.setMass(300);
 
+        //Default car variables
+        offtrack = false; //car starts on the tack
+        this.count = 0;
+        this.can_finish = false;
+
         //Side Bar Text
-        this.drs_label = this.add.text(807, 100, "DRS:", { font: "16px Arial", fill: "#ffffff", align: "center" });
-        this.drs_value = this.add.text(852, 100, "[NO]", { font: "16px Arial", fill: "#ffffff", align: "center" });
+        this.drs_label = this.add.text(807, 500, "DRS:", { font: "16px Arial", fill: "#ffffff", align: "center" });
+        this.drs_value = this.add.text(852, 500, "[NO]", { font: "16px Arial", fill: "#ffffff", align: "center" });
         this.reset = this.add.text(807, 700, "[R] to reset", { font: "16px Arial", fill: "#ffffff", align: "center" });
         
         //START TEXT
@@ -100,9 +145,9 @@ class Scene2 extends Phaser.Scene {
 
         //Lap Time text
         this.initialTime = 0;
-        this.add.text(807, 10, "Current Lap: "+ this.formatTime(this.initialTime), { font: "16px Arial", fill: "#ffffff", align: "center" });
+        this.add.text(807, 10, "Current Lap: ", { font: "16px Arial", fill: "#ffffff", align: "center" });
         lap_time = this.add.text(807, 40, ''+this.formatTime(this.initialTime), { font: "16px Arial", fill: "#ffffff", align: "center" });
-
+        this.add.text(803, 170, "Lap Times: ", { font: "16px Arial", fill: "#ffffff", align: "center" });
 
         this.cursors = this.input.keyboard.createCursorKeys();
         this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
@@ -111,13 +156,10 @@ class Scene2 extends Phaser.Scene {
         
     }
 
-    cross_finish_line() {
-        
-    }
-
     crash(pointer, gameObject) {
         gameObject.setTexture("explosion");
         gameObject.play("explode");
+        this.reset_game();
     }
 
     game_start(){
@@ -129,6 +171,31 @@ class Scene2 extends Phaser.Scene {
 
         //Make global variable true so other functions can know the game has started
         start_game = true;
+    }
+
+    finished_lap() {
+        console.log(this.count);
+        
+        if(this.can_finish == true){
+            if(this.count == 0){
+                time1 = this.formatTime(this.initialTime);
+                this.add.text(803, 200, "Lap 1: "+ time1, { font: "15px Arial", fill: "#ffffff", align: "center" });
+            }
+            if(this.count == 1){
+                time2 = this.formatTime(this.initialTime);
+                this.add.text(803, 230, "Lap 2: "+ time2, { font: "15px Arial", fill: "#ffffff", align: "center" });
+            }
+            if(this.count == 2){
+                time3 = this.formatTime(this.initialTime);
+                this.add.text(803, 260, "Lap 3: "+ time3, { font: "15px Arial", fill: "#ffffff", align: "center" });
+                this.scene.start("endGame");
+            }
+
+            //Reset the count and lap 
+            this.start_lap();
+            this.count++;
+            this.can_finish = false;
+        }
     }
 
     formatTime(seconds){
@@ -162,7 +229,12 @@ class Scene2 extends Phaser.Scene {
         if(start_game == true) {
             if (this.cursors.up.isDown)
             {
-                car.thrust(0.1);
+                if(offtrack == false) {
+                    car.thrust(0.1);
+                }
+                else {
+                    car.thrust(0.025);
+                }
 
                 if (this.cursors.left.isDown)
                 {
@@ -175,7 +247,12 @@ class Scene2 extends Phaser.Scene {
             }
             else if (this.cursors.down.isDown)
             {
-                car.thrustBack(0.1);
+                if(offtrack == false) {
+                    car.thrustBack(0.1);
+                }
+                else {
+                    car.thrustBack(0.025);
+                }
             
                 if (this.cursors.left.isDown)
                 {
@@ -189,7 +266,13 @@ class Scene2 extends Phaser.Scene {
 
             if(this.spaceKey.isDown)
             {
-                car.thrust(0.15);
+                if(offtrack == false) {
+                    car.thrust(0.15);
+                }
+                else {
+                    car.thrust(0.025);
+                }
+
                 this.drs_value.text = "[YES]";
                 if (this.cursors.left.isDown)
                 {

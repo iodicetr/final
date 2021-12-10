@@ -8,7 +8,6 @@ class Scene1 extends Phaser.Scene {
     this.load.image('map', 'assets/map.png');
     this.load.image('car', 'assets/car.png');
     this.load.image('finish_line', 'assets/finish_line.png');
-    this.load.image('center_wall', 'assets/center_wall.png');
     this.load.spritesheet("explosion", "assets/spritesheets/explosion.png",{
         frameWidth: 16,
         frameHeight: 16

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Phaser Game</title>
+        <title>Race Tycoon</title>
         <script type="text/javascript" src="phaser.min.js"></script>
         <script type="text/javascript" src="Scene1.js"></script>
         <script type="text/javascript" src="Scene2.js"></script>
@@ -20,13 +20,29 @@
                 margin: auto;
                 text-align: center;
                 padding: 15px;
+                color: white;
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+            }
+            #page-container {
+                position: relative;
+                min-height: 100vh;
+            }
+
+            #content-wrap {
+                padding-bottom: 2.5rem;    /* Footer height */
             }
         </style>
     </head>
     <body>
-
+        <div id="page-container">
+            <div id="content-wrap">
+              
+            </div>
+            <footer id="footer">
+                &copy; Thomas Iodice <a href="mailto:iodicetr@mail.uc.edu">Contact</a>
+            </footer>
+        </div>
     </body>
-    <footer>
-        &copy; Thomas Iodice <a href="mailto:iodicetr@mail.uc.edu">Contact</a>
-    </footer>
 </html>

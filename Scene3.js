@@ -41,7 +41,7 @@ class Scene3 extends Phaser.Scene {
         });
 
         notification.onclick = (e) => {
-            window.location.href = "";
+            window.location.href = "https://iodicetr.github.io/final/";
         }
 
     }
